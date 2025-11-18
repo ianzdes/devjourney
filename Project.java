@@ -16,6 +16,7 @@ public abstract class Project {
     }
 
     public int getDifficulty() { return difficulty; }
+    public String getName() { return name; }
 
     public abstract int finishProject();
 }

@@ -25,6 +25,18 @@ public class Developer {
     public void setName(String name) { this.name = name; }
     public void setXp(double xp) { this.xp = xp; }
 
+    public void study(String newSkill) {
+        if (this.skills.contains(newSkill)) {
+            System.out.println("voce ja tem essa skill pai");
+            this.xp += 5;
+        }
+        else {
+            this.addSkill(newSkill);
+            this.xp += 15;
+            System.out.println("voce aprendeu uma nova skill, parabens pai");
+        }
+    }
+
     public void addSkill(String skill) {
         if (!skills.contains(skill)) {
             skills.add(skill);
