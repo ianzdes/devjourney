@@ -12,6 +12,7 @@ public class Career {
     private List<Challenge> availableChallenges;
     private Random randomGenerator;
     private Scanner scanner;
+    private boolean isLeaving = false;
 
     public Career(Developer developer) {
         this.developer = developer;
@@ -37,7 +38,7 @@ public class Career {
         // ATENÇÃO: Scanner e Random devem ser usados no loop.
         // O seu loop está vazio: while (developer.getPosition() != Level.CEO) {}
         
-        while (developer.getPosition() != Level.CEO) {
+        while (developer.getPosition() != Level.CEO && isLeaving == false) { // a gente pode usar !isLeaving, mas a explicacao é diferente
             
             System.out.println("\n-------------------------------------");
             developer.showStats(); 
@@ -47,7 +48,8 @@ public class Career {
             System.out.println("1. Work on a Project");
             System.out.println("2. Study (Gain Skill)");
             System.out.println("3. Attempt Promotion");
-            System.out.print("Choose option (1-3): "); // Adicione mais opções se necessário
+            System.out.println("4. Leave");
+            System.out.print("Choose option (1-4): "); // Adicione mais opções se necessário
 
             try {
                 int choice = scanner.nextInt();
@@ -63,6 +65,10 @@ public class Career {
                         break;
                     case 3:
                         checkPromotion(); // Novo nome, lança a exceção
+                        break;
+                    case 4:
+                        System.out.println("leaving the journey. bye!");
+                        this.isLeaving = true;
                         break;
                     default:
                         System.out.println("Invalid option.");
