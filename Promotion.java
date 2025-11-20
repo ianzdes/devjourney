@@ -1,18 +1,17 @@
 package game;
 
 public class Promotion {
-
     public enum Level {
-        INTERN("Estagiário", 0),
-        JUNIOR("Júnior", 100),
-        PLENO("Pleno", 300),
+        INTERN("Estagiário", 100), // Ajustei XP para teste
+        JUNIOR("Júnior", 200),
+        PLENO("Pleno", 400),
         SENIOR("Sênior", 800),
         CEO("CEO", 1500);
 
-        private String position;
-        private int requiredXp;
+        private final String position;
+        private final int requiredXp;
 
-        Level(String position, int requiredXp) { // não é public Level por que o java cria automaticamente as instâncias enum
+        Level(String position, int requiredXp) {
             this.position = position;
             this.requiredXp = requiredXp;
         }
@@ -21,13 +20,11 @@ public class Promotion {
         public int getRequiredXp() { return requiredXp; }
 
         public Level getNextLevel() {
-            Level[] levels = Level.values();
-            int currentOrdinal = this.ordinal();
-
-            if (currentOrdinal < levels.length - 1) {
-                return levels[currentOrdinal + 1];
+            int nextIndex = this.ordinal() + 1;
+            if (nextIndex < values().length) {
+                return values()[nextIndex];
             }
-            return this;
+            return this; // Já é CEO
         }
     }
 }

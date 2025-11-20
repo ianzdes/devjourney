@@ -1,4 +1,7 @@
-package game;
+package game.challenges;
+import java.util.Scanner;
+
+import game.Developer;
 
 public abstract class Challenge {
     private String description;
@@ -9,7 +12,6 @@ public abstract class Challenge {
 
     public String getDescription() { return description; }
 
-    // todo desafio precisa ter um método execute()
-    // mas o comportamento será definido pelas subclasses
-    public abstract void execute(Developer dev);
+    // Adicionado Scanner sc como parâmetro
+    public abstract void execute(Developer dev, Scanner sc);
 }

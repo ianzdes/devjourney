@@ -1,6 +1,8 @@
-package game;
+package game.challenges;
 
 import java.util.Scanner;
+
+import game.Developer;
 
 public class HRMessageChallenge extends Challenge{
         public HRMessageChallenge() {
@@ -8,7 +10,7 @@ public class HRMessageChallenge extends Challenge{
     }
 
     @Override 
-    public void execute(Developer dev) {
+    public void execute(Developer dev, Scanner scanner) {
         Scanner sc = new Scanner(System.in);
         System.out.println("Digite sua senha: ");
         String password = sc.nextLine();

@@ -3,6 +3,7 @@ package game;
 import java.util.ArrayList;
 import java.util.List;
 import game.Promotion.Level;
+import game.exceptions.InsufficientXPException;
 
 public class Developer {
     private String name;
@@ -17,68 +18,45 @@ public class Developer {
         this.currentPosition = Level.INTERN;
     }
 
-    public String getName() { return name; }
-    public double getXp() { return xp; }
-    public List<String> getSkills() { return skills; }
     public Level getPosition() { return currentPosition; }
 
-    public void setName(String name) { this.name = name; }
-    public void setXp(double xp) { this.xp = xp; }
-
     public void study(String newSkill) {
-        if (this.skills.contains(newSkill)) {
-            System.out.println("voce ja tem essa skill pai");
-            this.xp += 5;
-        }
-        else {
-            this.addSkill(newSkill);
-            this.xp += 15;
-            System.out.println("voce aprendeu uma nova skill, parabens pai");
-        }
-    }
-
-    public void addSkill(String skill) {
-        if (!skills.contains(skill)) {
-            skills.add(skill);
+        if (skills.contains(newSkill)) {
+            System.out.println("Você já domina " + newSkill + ". Ganhou +5 XP por reforço.");
+            gainXp(5);
+        } else {
+            skills.add(newSkill);
+            System.out.println("Nova skill aprendida: " + newSkill + "! +15 XP.");
+            gainXp(15);
         }
     }
 
     public void gainXp(double amount) {
-        this.xp += amount;
-
-        if (this.xp < 0) {
-            this.xp = 0; // evitar que fique com xp negativo
-        }
-        System.out.println(name + " ganhou " + amount + " de xp! XP total: " + this.xp);
+        this.xp = Math.max(0, this.xp + amount); // Garante que não fica negativo
+        // System.out.println(name + " agora tem " + this.xp + " XP."); // Opcional, para não poluir
     }
 
     public void getPromotion() throws InsufficientXPException {
-        Level nextLevel = this.currentPosition.getNextLevel();
+        Level nextLevel = currentPosition.getNextLevel();
 
-        if (nextLevel == this.currentPosition) {
-            System.out.println("voce ja é o ceo");
+        if (nextLevel == currentPosition) {
+            System.out.println("Você já está no topo!");
             return;
         }
 
-        int requiredXp = nextLevel.getRequiredXp();
-
-        if (this.xp >= requiredXp) {
-            this.currentPosition = nextLevel; // sobe de cargo
-            // redefine xp apos a promocao para simular o comeco de um novo nivel
-            this.xp = 0;
-            System.out.println("promocao!");
-        }
-        else {
+        if (this.xp >= nextLevel.getRequiredXp()) {
+            this.currentPosition = nextLevel;
+            this.xp = 0; // Reseta XP para o novo nível
+            System.out.println("🎉 PROMOVIDO PARA " + currentPosition.getPosition() + "!");
+        } else {
             throw new InsufficientXPException(
-            "XP insuficiente. Você precisa de " + requiredXp + 
-            " XP para ser " + nextLevel.getPosition() + ". XP atual: " + this.xp
+                "Faltam " + (nextLevel.getRequiredXp() - this.xp) + " XP para " + nextLevel.getPosition()
             );
         }
     }
 
     public void showStats() {
-        System.out.println("Nome: " + name);
-        System.out.println("XP: " + xp);
-        System.out.println("Habilidades: " + skills);
+        System.out.printf("DEV: %s | CARGO: %s | XP: %.1f%n", name, currentPosition.getPosition(), xp);
+        System.out.println("Skills: " + (skills.isEmpty() ? "Nenhuma" : skills.toString()));
     }
 }
