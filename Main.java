@@ -3,21 +3,17 @@ package game;
 import java.util.Scanner;
 
 public class Main {
-    
-    public static void main (String[] args) {
+    public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("nome do dev?");
+        
+        System.out.print("Nome do Dev? ");
         String devName = scanner.nextLine();
 
-        // cria o desenvolvedor
         Developer player = new Developer(devName);
-
-        // cria o motor do jogo
         Career journey = new Career(player);
 
-        // inicia o jogo
-        journey.startJourney();
+        journey.startJourney(); // O loop acontece lá dentro
 
-        scanner.close();
+        scanner.close(); // Fecha o scanner apenas no final de tudo
     }
 }
