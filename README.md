@@ -2,13 +2,10 @@
 
 Este projeto é um jogo de simulação de carreira em console (CLI) desenvolvido em Java, onde o jogador avança de Estagiário a CEO, gerenciando projetos e habilidades.
 
-##  Informações de Entrega
+## Informações de Entrega
 
-* **Membros da Equipe:** Ian de Sousa Pereira, 00000850687
----
-## Como Executar o Jogo:
-
-* Java Development Kit (JDK) 8 ou superior.
+**Membros da Equipe:**
+- Ian de Sousa Pereira, 00000850687
 
 ### Passos para Execução
 
@@ -27,7 +24,6 @@ Este projeto é um jogo de simulação de carreira em console (CLI) desenvolvido
     ```
     *O jogo iniciará solicitando o nome do Dev.*
 
----
 
 ## Funcionamento do Jogo
 
