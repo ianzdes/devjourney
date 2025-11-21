@@ -18,7 +18,7 @@ public class BossMessage extends Challenge {
         String password = sc.nextLine(); 
 
         if("1234".equals(password)) {
-            System.out.println("✅ Respondeu rápido! +50XP");
+            System.out.println("✅ zRespondeu rápido! +50XP");
             dev.gainXp(50);
         } else {
             System.out.println("❌ Errou a senha! O chefe ficou bravo. -30XP");

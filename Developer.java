@@ -2,8 +2,6 @@ package game;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import game.exceptions.InsufficientXPException;
 import game.service.Promotion.Level;
 
 public class Developer {
@@ -16,7 +14,7 @@ public class Developer {
 
     public Developer(String name) {
         this.name = name;
-        this.xp = 0.0;
+        this.xp = 50.0; 
         this.skills = new ArrayList<>();
         this.currentPosition = Level.INTERN;
     }
@@ -25,29 +23,11 @@ public class Developer {
     public double getXp() { return xp; }
     public List<String> getSkills() { return skills; }
     public Level getPosition() { return currentPosition; }
-
-    // teste
     public double getXpMultiplier() { return xpMultiplier; }
     public int getBoostRemainingProjects() { return boostRemainingProjects; }
 
-    public void activateXpBoost(double multiplier, int duration) {
-        this.xpMultiplier = multiplier;
-        this.boostRemainingProjects = duration;
-        System.out.println("boost ativado: xp x" + multiplier + "pelos proximos " + duration + " projetos");        
-    }
-
-    public void useBoost() {
-        if (boostRemainingProjects > 0) {
-            boostRemainingProjects--;
-            if (boostRemainingProjects == 0) {
-                this.xpMultiplier = 1.0; // desativa o boost
-                System.out.println("boost expirado");
-            }
-        }
-    }
-
     public void gainXp(double amount) {
-        this.xp = Math.max(0, this.xp + amount);
+        this.xp = Math.max(0, this.xp + amount); 
     }
 
     public void setCurrentPosition(Level newLevel) {
@@ -64,5 +44,21 @@ public class Developer {
             return true;
         }
         return false;
+    }
+
+    public void activateXpBoost(double multiplier, int duration) {
+        this.xpMultiplier = multiplier;
+        this.boostRemainingProjects = duration;
+        System.out.println("BOOST ATIVADO: XP x" + multiplier + " pelos proximos " + duration + " projetos");
+    }
+
+    public void useBoost() {
+        if (boostRemainingProjects > 0) {
+            boostRemainingProjects--;
+            if (boostRemainingProjects == 0) {
+                this.xpMultiplier = 1.0; 
+                System.out.println("BOOST EXPIRADO");
+            }
+        }
     }
 }

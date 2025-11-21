@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
-
-import game.projects.*;
-import game.challenges.*;
-import game.exceptions.InsufficientXPException;
-import game.service.PromotionService; // NOVO: Serviço de Promoção
-import game.SkillCatalog;     // NOVO: Catálogo de Skills
-import game.service.Promotion.Level;
-
 import java.util.InputMismatchException;
+
+import game.projects.*; 
+import game.challenges.*; 
+import game.exceptions.InsufficientXPException;
+import game.service.PromotionService; 
+import game.SkillCatalog;
+import game.service.EasterEgg; 
+import game.service.Promotion.Level;
 
 public class Career {
     private Developer developer;
@@ -20,95 +20,153 @@ public class Career {
     private List<Challenge> availableChallenges;
     private Random randomGenerator;
     private Scanner scanner;
-    private boolean isLeaving = false; // Flag para sair
+    private boolean isLeaving = false; 
+    private Project activeProject = null; 
 
     public Career(Developer developer, Scanner scanner) {
         this.developer = developer;
         this.availableProjects = new ArrayList<>();
         this.availableChallenges = new ArrayList<>();
         this.randomGenerator = new Random();
-        this.scanner = scanner; // Agora usa o Scanner passado do Main
+        this.scanner = scanner; 
         setupEvents();
     }
 
     private void setupEvents() {
-        // Popule os eventos aqui, ajustando a XP (balanceamento)
-        availableProjects.add(new ProjectSmartContract("Legado C++ 'Caixa Preta'", 7));
-        availableChallenges.add(new HRChecking()); // Garantir que HRMessageChallenge recebe Scanner
+        availableProjects.add(new ProjectSmartContract("Site Institucional Basico", 3));
+        availableChallenges.add(new HRChecking()); 
+        availableChallenges.add(new GirlfriendChallenge()); 
+    }
+    
+    private void generateNewProjects() {
+        System.out.println("\nNovos projetos chegaram");
+        availableProjects.add(new ProjectSmartContract("Refatoracao Legacy", 7));
+        availableProjects.add(new ProjectAI("Feature de Recomendacao", 6));
+        availableProjects.add(new ProjectDataScience("Pipeline de Dados", 5));
     }
 
-    // --- MÉTODOS DE CONTROLE DO JOGO ---
-
     public void startJourney() {
-        System.out.println("--- BEM-VINDO(A) À JORNADA DO DEV ---");
+        System.out.println("--- JORNADA DO DEV ---");
 
         while (developer.getPosition() != Level.CEO && isLeaving == false) {
             
-            showStats(); // NOVO: Chamada para o método que exibe o status
+            showStats(); 
             System.out.println("-------------------------------------");
+            System.out.println("1. Trabalhar em Projeto");
+            System.out.println("2. Estudar (Ganhar Skill)");
+            System.out.println("3. Tentar Promocao");
+            System.out.println("4. Sair");
+            System.out.print("Escolha: ");
 
-            System.out.println("1. Work on a Project");
-            System.out.println("2. Study (Gain Skill)");
-            System.out.println("3. Attempt Promotion");
-            System.out.println("4. Leave");
-            System.out.print("Choose option (1-4): ");
+            String rawInput = scanner.nextLine(); 
+
+            if (EasterEgg.activate(developer, rawInput)) { 
+                continue; 
+            }
 
             try {
-                int choice = scanner.nextInt();
-                scanner.nextLine();
+                int choice = Integer.parseInt(rawInput.trim()); 
 
                 switch (choice) {
                     case 1:
                         workOnProject();
                         break;
                     case 2:
-                        studySkill(); // MÉTODO PARA VALIDAR E APRENDER SKILL
+                        studySkill(); 
                         break;
                     case 3:
-                        attemptPromotion(); // NOVO MÉTODO (Chama o PromotionService)
+                        attemptPromotion(); 
                         break;
                     case 4:
-                        System.out.println("💔 Leaving the career journey. Goodbye!");
+                        System.out.println("Saindo do jogo.");
                         this.isLeaving = true;
                         break;
                     default:
-                        System.out.println("Invalid option.");
+                        System.out.println("Opcao invalida.");
                 }
 
                 if (!isLeaving && randomGenerator.nextInt(100) < 30) {
-                    generateRandomChallenge();
+                    generateRandomChallenge(); 
                 }
 
             } catch (InsufficientXPException e) {
-                System.err.println("❌ PROMOTION FAILED: " + e.getMessage());
-            } catch (InputMismatchException e) {
-                System.err.println("❌ Invalid input! Please enter a number.");
-                scanner.nextLine();
+                System.err.println("PROMOCAO FALHOU: " + e.getMessage());
+            } catch (NumberFormatException e) {
+                System.err.println("Entrada invalida. Digite um numero.");
             } catch (Exception e) {
-                System.err.println("❌ Unexpected error: " + e.getMessage());
+                System.err.println("Erro inesperado: " + e.getMessage());
             }
         }
 
         if (developer.getPosition() == Level.CEO) {
-            System.out.println("\n--- GAME OVER: YOU ARE THE CEO! 👑 ---");
+            System.out.println("\n--- GAME OVER: VOCE E O CEO! ---");
+        }
+    }
+    
+    private void workOnProject() {
+        if (activeProject == null) {
+            if (availableProjects.isEmpty()) {
+                generateNewProjects(); 
+                if (availableProjects.isEmpty()) {
+                    System.out.println("Nao ha projetos disponiveis.");
+                    return;
+                }
+            }
+            
+            activeProject = availableProjects.remove(0); 
+            System.out.println("Iniciando projeto: " + activeProject.getName());
+            System.out.println("Progresso: 0%");
+            return; 
+        }
+        
+        int progressIncrease = 10;
+        int currentProgress = activeProject.getProgress();
+        int newProgress = currentProgress + progressIncrease;
+        
+        activeProject.setProgress(newProgress);
+        
+        System.out.println("Trabalhando em " + activeProject.getName() + "...");
+
+        if (newProgress >= 100) {
+            int baseXpEarned = activeProject.finishProject(); 
+            
+            double multiplier = developer.getXpMultiplier();
+            int finalXpEarned = (int) (baseXpEarned * multiplier);
+
+            if (multiplier > 1.0) {
+                System.out.printf("BOOST ATIVO Base XP: %d -> Final XP: %d%n", baseXpEarned, finalXpEarned);
+                developer.useBoost(); 
+            }
+            
+            developer.gainXp(finalXpEarned); 
+            System.out.println("PROJETO CONCLUIDO");
+            System.out.println("Ganhou " + finalXpEarned + " XP.");
+            activeProject = null; 
+            
+        } else {
+            System.out.println("Progresso: " + newProgress + "%");
+            developer.gainXp(5); 
         }
     }
 
-    // --- MÉTODOS DE SERVIÇO (MOVEMOS A LÓGICA DO DEVELOPER PARA CÁ) ---
-
-    // LÓGICA DE PROMOÇÃO (CHAMA O SERVIÇO)
     private void attemptPromotion() throws InsufficientXPException {
-        // Chama o método estático do serviço, que faz a checagem e lança a exceção se falhar.
         PromotionService.attemptPromotion(this.developer);
     }
-
-    // LÓGICA DE ESTUDO E VALIDAÇÃO DE SKILLS (USANDO SkillCatalog)
+    
+    private void generateRandomChallenge() {
+        if (availableChallenges.isEmpty()) return;
+        
+        System.out.println("\nDESAFIO SURPRESA");
+        Challenge challenge = availableChallenges.get(randomGenerator.nextInt(availableChallenges.size()));
+        System.out.println(challenge.getDescription());
+        challenge.execute(developer, this.scanner); 
+    }
+    
     private void studySkill() {
         List<String> allSkills = SkillCatalog.getAllSkills();
         List<String> availableToLearn = new ArrayList<>();
         
-        // 1. Prepara a lista de skills para exibição
-        System.out.println("\n📚 SKILLS DISPONÍVEIS PARA ESTUDO:");
+        System.out.println("SKILLS DISPONIVEIS:");
         int index = 1;
         for (String skill : allSkills) {
             if (!developer.getSkills().contains(skill)) {
@@ -119,93 +177,44 @@ public class Career {
         }
         
         if (availableToLearn.isEmpty()) {
-            System.out.println("Você já aprendeu todas as skills! Reforçando o conhecimento (+5 XP).");
+            System.out.println("Todas as skills aprendidas. +5 XP.");
             developer.gainXp(5);
             return;
         }
 
-        System.out.print("Escolha o NÚMERO da skill para aprender: ");
-        
+        System.out.print("Escolha o numero: ");
         try {
             int choiceIndex = scanner.nextInt();
             scanner.nextLine(); 
             
             if (choiceIndex > 0 && choiceIndex <= availableToLearn.size()) {
                 String chosenSkill = availableToLearn.get(choiceIndex - 1);
-                
-                // 2. Adiciona a skill e determina a XP (Lógica de XP do estudo)
-                if (developer.addSkill(chosenSkill)) { // addSkill agora retorna true/false
-                    developer.gainXp(10); // Valor balanceado
-                    System.out.println("Nova skill aprendida: " + chosenSkill + "! +10 XP.");
+                if (developer.addSkill(chosenSkill)) {
+                    developer.gainXp(10); 
+                    System.out.println("Skill aprendida: " + chosenSkill + " (+10 XP)");
                 }
-                
             } else {
-                System.out.println("Opção inválida.");
+                System.out.println("Opcao invalida.");
             }
         } catch (InputMismatchException e) {
-            System.err.println("❌ Entrada inválida. Digite um número.");
+            System.err.println("Entrada invalida.");
             scanner.nextLine();
         }
     }
 
-
-    // LÓGICA DE DESAFIO (PASSANDO O SCANNER)
-    private void generateRandomChallenge() {
-        System.out.println("\n🚨 SURPRISE CHALLENGE!");
-        Challenge challenge = availableChallenges.get(randomGenerator.nextInt(availableChallenges.size()));
-        
-        System.out.println("Challenge: " + challenge.getDescription());
-        
-        // PASSA O SCANNER PARA O DESAFIO
-        challenge.execute(developer, this.scanner); 
-    }
-    
-    // EXIBIÇÃO DE ESTATÍSTICAS (O QUE ERA O Developer.showStats())
     private void showStats() {
         System.out.println("\n-------------------------------------");
-        System.out.printf("DEV: %s | CARGO: %s | XP: %.1f%n", 
+        System.out.printf("DEV: %s | CARGO: %s | XP: %.1f", 
             developer.getName(), 
             developer.getPosition().getPosition(), 
             developer.getXp());
-        
-        String skillList = developer.getSkills().isEmpty() ? 
-            "Nenhuma" : developer.getSkills().toString().replaceAll("[\\[\\]]", "");
             
-        System.out.println("Skills: " + skillList);
-    }
-    
-    // (workOnProject continua o mesmo)
-// Dentro de Career.java
-
-    private void workOnProject() {
-        // 1. Checa se há projetos disponíveis
-        if (availableProjects.isEmpty()) {
-            System.out.println("\n🚫 Não há projetos disponíveis no momento. Tente estudar ou desafiar o status quo!");
-            return;
+        if (developer.getBoostRemainingProjects() > 0) {
+            System.out.printf(" | BOOST: x%.1f (%d restantes)", 
+                developer.getXpMultiplier(), 
+                developer.getBoostRemainingProjects());
         }
-        
-        // Simplificação: pega o primeiro projeto disponível (você pode melhorar a lógica de escolha depois)
-        Project selectedProject = availableProjects.get(0); 
-
-        System.out.println("\n💻 TRABALHANDO em: " + selectedProject.getName());
-        
-        // 2. Chama o método de conclusão do projeto, que retorna o XP
-        int xpEarned = selectedProject.finishProject(); 
-        
-        // O XP pode ser negativo se houver bugs (ProjectSmartContract, ProjectAI)
-        
-        // 3. Aplica o ganho (ou perda) de XP ao Developer
-        developer.gainXp(xpEarned); 
-
-        if (xpEarned > 0) {
-            System.out.println("✅ Projeto concluído com sucesso! Ganhou +" + xpEarned + " XP.");
-        } else if (xpEarned < 0) {
-            System.out.println("❌ Projeto falhou! Penalidade de " + xpEarned + " XP.");
-        } else {
-            System.out.println("⚠️ Projeto concluído, mas sem XP. Talvez a dificuldade fosse muito baixa.");
-        }
-        
-        // 4. Remove o projeto da lista para simular conclusão (o Dev não repete o mesmo projeto)
-        availableProjects.remove(0);
+        System.out.println(); 
+        System.out.println("Skills: " + developer.getSkills());
     }
 }

@@ -2,10 +2,10 @@ package game.service;
 
 public class Promotion {
     public enum Level {
-        INTERN("Estagiário", 0),
-        JUNIOR("Júnior", 2000),
+        INTERN("Estagiario", 0),
+        JUNIOR("Junior", 2000),
         PLENO("Pleno", 4000),
-        SENIOR("Sênior", 8000),
+        SENIOR("Senior", 8000),
         CEO("CEO", 15000);
 
         private final String position;
@@ -24,7 +24,7 @@ public class Promotion {
             if (nextIndex < values().length) {
                 return values()[nextIndex];
             }
-            return this; // Já é CEO
+            return this; 
         }
     }
 }

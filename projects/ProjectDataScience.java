@@ -7,9 +7,8 @@ public class ProjectDataScience extends Project {
 
     @Override
     public int finishProject() {
-        System.out.println("📊 Limpando dataset e treinando modelo...");
-        // Simulação simples: sempre dá certo, mas XP varia pouco
-        System.out.println("✅ Modelo gerou insights valiosos!");
+        System.out.println("Treinando modelo...");
+        System.out.println("Modelo gerou insights.");
         return xpReward;
     }
 }

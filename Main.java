@@ -10,8 +10,6 @@ public class Main {
         String devName = scanner.nextLine();
 
         Developer player = new Developer(devName);
-        
-        // CORREÇÃO AQUI: Agora você passa o 'player' E o 'scanner'
         Career journey = new Career(player, scanner);
 
         journey.startJourney(); 
