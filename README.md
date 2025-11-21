@@ -4,7 +4,7 @@ Este projeto é um jogo de simulação de carreira em console (CLI) desenvolvido
 
 ##  Informações de Entrega
 
-* **Membros da Equipe:** `Ian de Sousa Pereira, 00000850687`
+* **Membros da Equipe:** Ian de Sousa Pereira, 00000850687
 ---
 ## Como Executar o Jogo:
 
@@ -14,7 +14,7 @@ Este projeto é um jogo de simulação de carreira em console (CLI) desenvolvido
 
 1.  **Clone o Repositório:**
     ```bash
-    git clone [COLE A URL DO SEU REPOSITÓRIO AQUI]
+    git clone https://github.com/ianzdes/devjourney.git
     ```
 2.  **Compile o Código:** (A partir do diretório raiz do projeto)
     ```bash

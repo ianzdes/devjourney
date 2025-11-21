@@ -9,8 +9,7 @@ import java.util.InputMismatchException;
 import game.projects.*; 
 import game.challenges.*; 
 import game.exceptions.InsufficientXPException;
-import game.service.PromotionService; 
-import game.SkillCatalog;
+import game.service.PromotionService;
 import game.service.EasterEgg; 
 import game.service.Promotion.Level;
 

@@ -6,7 +6,7 @@ import java.util.List;
 public class SkillCatalog {
 
     private static final List<String> ALL_SKILLS = Arrays.asList(
-        "skill 1",
+        "Programar com olhos fechados",
         "skill 2",
         "skill 3",
         "skill 4",
