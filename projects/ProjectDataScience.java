@@ -2,7 +2,7 @@ package game.projects;
 
 public class ProjectDataScience extends Project {
     public ProjectDataScience(String name, int difficulty) {
-        super(name, difficulty, 70 + (difficulty * 12));
+        super(name, difficulty, 15 + difficulty * 10);
     }
 
     @Override

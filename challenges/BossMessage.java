@@ -3,8 +3,8 @@ import java.util.Scanner;
 
 import game.Developer;
 
-public class BossMessageChallenge extends Challenge {
-    public BossMessageChallenge() {
+public class BossMessage extends Challenge {
+    public BossMessage() {
         super("O chefe mandou mensagem perguntando o status no Slack!");
     }
 

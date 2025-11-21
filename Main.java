@@ -10,10 +10,12 @@ public class Main {
         String devName = scanner.nextLine();
 
         Developer player = new Developer(devName);
-        Career journey = new Career(player);
+        
+        // CORREÇÃO AQUI: Agora você passa o 'player' E o 'scanner'
+        Career journey = new Career(player, scanner);
 
-        journey.startJourney(); // O loop acontece lá dentro
+        journey.startJourney(); 
 
-        scanner.close(); // Fecha o scanner apenas no final de tudo
+        scanner.close();
     }
 }

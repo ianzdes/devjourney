@@ -3,7 +3,7 @@ import java.util.Random;
 
 public class ProjectSmartContract extends Project {
     public ProjectSmartContract(String name, int difficulty) {
-        super(name, difficulty, 100 + (difficulty * 10));
+        super(name, difficulty, difficulty * 3); // aqui ganha xp
     }
 
     @Override

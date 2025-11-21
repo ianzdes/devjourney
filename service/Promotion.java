@@ -1,12 +1,12 @@
-package game;
+package game.service;
 
 public class Promotion {
     public enum Level {
-        INTERN("Estagiário", 100), // Ajustei XP para teste
-        JUNIOR("Júnior", 200),
-        PLENO("Pleno", 400),
-        SENIOR("Sênior", 800),
-        CEO("CEO", 1500);
+        INTERN("Estagiário", 0),
+        JUNIOR("Júnior", 2000),
+        PLENO("Pleno", 4000),
+        SENIOR("Sênior", 8000),
+        CEO("CEO", 15000);
 
         private final String position;
         private final int requiredXp;

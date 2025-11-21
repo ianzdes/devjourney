@@ -3,7 +3,7 @@ import java.util.Random;
 
 public class ProjectAI extends Project {
     public ProjectAI(String name, int difficulty) {
-        super(name, difficulty, 120 + (difficulty * 15)); // Paga bem, mas difícil
+        super(name, difficulty, 15 + difficulty * 5); // Paga bem, mas difícil
     }
 
     @Override
