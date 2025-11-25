@@ -12,6 +12,7 @@ import game.exceptions.InsufficientXPException;
 import game.service.PromotionService;
 import game.service.EasterEgg; 
 import game.service.Promotion.Level;
+import game.skills.SkillCatalog; // CORREÇÃO: Usando o novo pacote skills
 
 public class Career {
     private Developer developer;
@@ -129,12 +130,18 @@ public class Career {
         if (newProgress >= 100) {
             int baseXpEarned = activeProject.finishProject(); 
             
-            double multiplier = developer.getXpMultiplier();
-            int finalXpEarned = (int) (baseXpEarned * multiplier);
+            // ✅ CORREÇÃO AQUI: Combina boost temporário e boost permanente
+            double finalMultiplier = developer.getXpMultiplier() * developer.getPermanentXpBoost();
+            int finalXpEarned = (int) (baseXpEarned * finalMultiplier); 
 
-            if (multiplier > 1.0) {
-                System.out.printf("BOOST ATIVO Base XP: %d -> Final XP: %d%n", baseXpEarned, finalXpEarned);
+            if (developer.getXpMultiplier() > 1.0) {
+                System.out.printf("BOOST TEMPORARIO ATIVO! Base XP: %d -> Final XP: %d%n", baseXpEarned, finalXpEarned);
                 developer.useBoost(); 
+            } else {
+                 System.out.printf("Base XP: %d. XP Final (c/ Skill Boost %.1fx): %d%n", 
+                    baseXpEarned, 
+                    developer.getPermanentXpBoost(), 
+                    finalXpEarned);
             }
             
             developer.gainXp(finalXpEarned); 
@@ -169,14 +176,18 @@ public class Career {
         int index = 1;
         for (String skill : allSkills) {
             if (!developer.getSkills().contains(skill)) {
-                System.out.println(index + ". " + skill);
+                
+                // Exibe o efeito de boost da skill
+                double boost = SkillCatalog.getBoostEffect(skill);
+                System.out.printf("%d. %s (+%.1f%% XP permanente)%n", index, skill, boost);
+                
                 availableToLearn.add(skill);
                 index++;
             }
         }
         
         if (availableToLearn.isEmpty()) {
-            System.out.println("Todas as skills aprendidas. +5 XP.");
+            System.out.println("Todas as skills aprendidas. Reforco de conhecimento (+5 XP).");
             developer.gainXp(5);
             return;
         }
@@ -188,10 +199,18 @@ public class Career {
             
             if (choiceIndex > 0 && choiceIndex <= availableToLearn.size()) {
                 String chosenSkill = availableToLearn.get(choiceIndex - 1);
+                
                 if (developer.addSkill(chosenSkill)) {
+                    // 1. Ganha XP por estudar
                     developer.gainXp(10); 
-                    System.out.println("Skill aprendida: " + chosenSkill + " (+10 XP)");
+                    
+                    // 2. Aplica o boost permanente
+                    double boostPercentage = SkillCatalog.getBoostEffect(chosenSkill);
+                    developer.addPermanentXpBoost(boostPercentage);
+                    
+                    System.out.println("Skill aprendida: " + chosenSkill + " (+10 XP).");
                 }
+                
             } else {
                 System.out.println("Opcao invalida.");
             }
@@ -209,10 +228,16 @@ public class Career {
             developer.getXp());
             
         if (developer.getBoostRemainingProjects() > 0) {
-            System.out.printf(" | BOOST: x%.1f (%d restantes)", 
+            System.out.printf(" | BOOST TEMP: x%.1f (%d restantes)", 
                 developer.getXpMultiplier(), 
                 developer.getBoostRemainingProjects());
         }
+        
+        // Exibe o boost permanente
+        if (developer.getPermanentXpBoost() > 1.0) {
+             System.out.printf(" | SKILL BOOST: x%.2f", developer.getPermanentXpBoost());
+        }
+        
         System.out.println(); 
         System.out.println("Skills: " + developer.getSkills());
     }

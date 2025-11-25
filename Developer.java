@@ -11,6 +11,9 @@ public class Developer {
     private Level currentPosition;
     private double xpMultiplier = 1.0;
     private int boostRemainingProjects = 0;
+    
+    // NOVO: Multiplicador Permanente de XP (acumulativo)
+    private double permanentXpBoost = 1.0; 
 
     public Developer(String name) {
         this.name = name;
@@ -25,6 +28,7 @@ public class Developer {
     public Level getPosition() { return currentPosition; }
     public double getXpMultiplier() { return xpMultiplier; }
     public int getBoostRemainingProjects() { return boostRemainingProjects; }
+    public double getPermanentXpBoost() { return permanentXpBoost; }
 
     public void gainXp(double amount) {
         this.xp = Math.max(0, this.xp + amount); 
@@ -60,5 +64,11 @@ public class Developer {
                 System.out.println("BOOST EXPIRADO");
             }
         }
+    }
+    
+    // NOVO MÉTODO: Adiciona um aumento percentual ao boost permanente
+    public void addPermanentXpBoost(double percentage) {
+        this.permanentXpBoost += percentage / 100.0;
+        System.out.printf("BOOST PERMANENTE: XP base aumentou %.1f%%%n", percentage);
     }
 }

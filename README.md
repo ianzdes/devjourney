@@ -7,7 +7,7 @@ Este projeto é um jogo de simulação de carreira em console (CLI) desenvolvido
 **Membros da Equipe:**
 - Ian de Sousa Pereira, 00000850687
 
-### Passos para Execução
+## Passos para Execução
 
 1.  **Clone o Repositório:**
     ```bash
@@ -55,7 +55,7 @@ O **`GirlfriendChallenge`** introduz uma mecânica de *boost* permanente:
 
 | Escolha | Efeito Imediato | Recompensa de Longo Prazo |
 | :--- | :--- | :--- |
-| **4. Terminar** | Perda de **50 XP**. | Ativa **Boost de XP de 4.0x** (300% de aumento) para os **próximos 5 projetos**. |
+| **4. Terminar** | Perda de **200 XP**. | Ativa **Boost de XP de 4.0x** (300% de aumento) para os **próximos 5 projetos**. |
 
 ### 4. Desafios e Comandos
 

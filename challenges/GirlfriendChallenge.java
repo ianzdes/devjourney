@@ -12,10 +12,10 @@ public class GirlfriendChallenge extends Challenge {
 
     @Override 
     public void execute(Developer dev, Scanner scanner) {
-        System.out.println("MENSAGEM: Voce esta livre para sair hoje a noite?");
+        System.out.println("MENSAGEM: Você está livre para sair hoje à noite?");
         System.out.println("1. Sim");
-        System.out.println("2. Nao");
-        System.out.println("3. Amanha");
+        System.out.println("2. Não");
+        System.out.println("3. Amanhã");
         System.out.println("4. Terminar");
         System.out.print("Escolha: ");
         
@@ -25,25 +25,25 @@ public class GirlfriendChallenge extends Challenge {
             
             switch (choice) {
                 case 1:
-                    System.out.println("Resposta: Sim (+40 XP)");
+                    System.out.println("Resposta: Sim (+25 XP)");
                     dev.gainXp(40);
                     break;
                 case 2:
-                    System.out.println("Resposta: Nao (-20 XP)");
+                    System.out.println("A sua namorada não gostou da resposta! (-60 XP)");
                     dev.gainXp(-20);
                     break;
                 case 3:
-                    System.out.println("Resposta: Amanha (0 XP)");
+                    System.out.println("A sua namorada não gosta de esperar! (-30 XP)");
                     break;
                 case 4:
-                    System.out.println("Resposta: Terminar (-50 XP)");
-                    dev.gainXp(-50);
+                    System.out.println("Você partiu o coração da sua namorada! (-200 XP)");
+                    dev.gainXp(-200);
                     break;
                 default:
-                    System.out.println("Invalido.");
+                    System.out.println("Inválido.");
             }
         } catch (InputMismatchException e) {
-            System.err.println("Entrada invalida.");
+            System.err.println("Entrada inválida.");
             scanner.nextLine(); 
         }
     }

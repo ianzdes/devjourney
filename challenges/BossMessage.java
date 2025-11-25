@@ -10,18 +10,18 @@ public class BossMessage extends Challenge {
 
     @Override 
     public void execute(Developer dev, Scanner sc) {
-        // NÃO criamos new Scanner(System.in) aqui para não travar a Main
+        // não pode criar new Scanner(System.in) aqui para não travar main
         System.out.println("O chefe pergunta: 'Qual a senha do servidor de prod?' (Dica: 1234)");
         System.out.print("Sua resposta: ");
         
-        // Cuidado: nextLine pode pegar buffer vazio dependendo de como foi chamado antes
+        // nextLine pode pegar buffer vazio dependendo de como foi chamado antes
         String password = sc.nextLine(); 
 
         if("1234".equals(password)) {
-            System.out.println("✅ zRespondeu rápido! +50XP");
+            System.out.println("Respondeu rápido! +50XP");
             dev.gainXp(50);
         } else {
-            System.out.println("❌ Errou a senha! O chefe ficou bravo. -30XP");
+            System.out.println("Errou a senha! O chefe ficou bravo. -30XP");
             dev.gainXp(-30);
         }
     }

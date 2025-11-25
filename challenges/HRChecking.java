@@ -4,12 +4,12 @@ import game.Developer;
 
 public class HRChecking extends Challenge {
     public HRChecking() {
-        super("Mensagem urgente do chefe");
+        super("O RH ");
     }
 
     @Override 
     public void execute(Developer dev, Scanner scanner) {
-        System.out.println("Digite sua senha: ");
+        System.out.println("Digite sua senha: (dica: 1234)");
         String password = scanner.nextLine(); 
 
         if("1234".equals(password)) {
