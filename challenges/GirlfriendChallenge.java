@@ -38,6 +38,7 @@ public class GirlfriendChallenge extends Challenge {
                 case 4:
                     System.out.println("Você partiu o coração da sua namorada! (-200 XP)");
                     dev.gainXp(-200);
+                    dev.activateXpBoost(4.0, 5);
                     break;
                 default:
                     System.out.println("Inválido.");

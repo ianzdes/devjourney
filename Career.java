@@ -12,7 +12,7 @@ import game.exceptions.InsufficientXPException;
 import game.service.PromotionService;
 import game.service.EasterEgg; 
 import game.service.Promotion.Level;
-import game.skills.SkillCatalog; // CORREÇÃO: Usando o novo pacote skills
+import game.skills.SkillCatalog; // PACOTE CORRETO
 
 public class Career {
     private Developer developer;
@@ -32,10 +32,18 @@ public class Career {
         setupEvents();
     }
 
+// Em game/Career.java
+
     private void setupEvents() {
+        // --- PROJETOS INICIAIS (Diversificando a lista inicial) ---
         availableProjects.add(new ProjectSmartContract("Site Institucional Basico", 3));
-        availableChallenges.add(new HRChecking()); 
-        availableChallenges.add(new GirlfriendChallenge()); 
+        availableProjects.add(new ProjectAI("Bot de Respostas Automaticas", 2)); 
+        availableProjects.add(new ProjectDataScience("Relatorio Mensal", 1));
+
+        // --- DESAFIOS INICIAIS ---
+        availableChallenges.add(new HRChecking()); // Desafio de Compliance (Quiz)
+        availableChallenges.add(new GirlfriendChallenge()); // Desafio de Relacionamento (Boost)
+        availableChallenges.add(new BossMessage()); // Desafio do Chefe (Soma Aleatória)
     }
     
     private void generateNewProjects() {
@@ -45,12 +53,15 @@ public class Career {
         availableProjects.add(new ProjectDataScience("Pipeline de Dados", 5));
     }
 
+// Em game/Career.java
+
     public void startJourney() {
         System.out.println("--- JORNADA DO DEV ---");
+        // Exibe o status inicial ANTES do loop
+        showStats(); 
 
         while (developer.getPosition() != Level.CEO && isLeaving == false) {
             
-            showStats(); 
             System.out.println("-------------------------------------");
             System.out.println("1. Trabalhar em Projeto");
             System.out.println("2. Estudar (Ganhar Skill)");
@@ -60,41 +71,49 @@ public class Career {
 
             String rawInput = scanner.nextLine(); 
 
+            // 1. Verifica Easter Egg
             if (EasterEgg.activate(developer, rawInput)) { 
-                continue; 
+                // Se ativou Easter Egg, as estatísticas serão mostradas no final.
+            } else {
+                try {
+                    int choice = Integer.parseInt(rawInput.trim()); 
+
+                    // 2. Executa a Ação Escolhida
+                    switch (choice) {
+                        case 1:
+                            workOnProject();
+                            break;
+                        case 2:
+                            studySkill(); 
+                            break;
+                        case 3:
+                            attemptPromotion(); 
+                            break;
+                        case 4:
+                            System.out.println("Saindo do jogo.");
+                            this.isLeaving = true;
+                            break;
+                        default:
+                            System.out.println("Opcao invalida.");
+                    }
+
+                    // 3. Verifica Desafio Aleatório
+                    if (!isLeaving && randomGenerator.nextInt(100) < 30) {
+                        generateRandomChallenge(); 
+                    }
+
+                } catch (InsufficientXPException e) {
+                    System.err.println("PROMOCAO FALHOU: " + e.getMessage());
+                } catch (NumberFormatException e) {
+                    System.err.println("Entrada invalida. Digite um numero.");
+                } catch (Exception e) {
+                    System.err.println("Erro inesperado: " + e.getMessage());
+                }
             }
 
-            try {
-                int choice = Integer.parseInt(rawInput.trim()); 
-
-                switch (choice) {
-                    case 1:
-                        workOnProject();
-                        break;
-                    case 2:
-                        studySkill(); 
-                        break;
-                    case 3:
-                        attemptPromotion(); 
-                        break;
-                    case 4:
-                        System.out.println("Saindo do jogo.");
-                        this.isLeaving = true;
-                        break;
-                    default:
-                        System.out.println("Opcao invalida.");
-                }
-
-                if (!isLeaving && randomGenerator.nextInt(100) < 30) {
-                    generateRandomChallenge(); 
-                }
-
-            } catch (InsufficientXPException e) {
-                System.err.println("PROMOCAO FALHOU: " + e.getMessage());
-            } catch (NumberFormatException e) {
-                System.err.println("Entrada invalida. Digite um numero.");
-            } catch (Exception e) {
-                System.err.println("Erro inesperado: " + e.getMessage());
+            // 4. Exibe o Status Atualizado no final do turno
+            if (!isLeaving) {
+                showStats(); 
             }
         }
 
@@ -130,7 +149,7 @@ public class Career {
         if (newProgress >= 100) {
             int baseXpEarned = activeProject.finishProject(); 
             
-            // ✅ CORREÇÃO AQUI: Combina boost temporário e boost permanente
+            // Calcula o multiplicador final
             double finalMultiplier = developer.getXpMultiplier() * developer.getPermanentXpBoost();
             int finalXpEarned = (int) (baseXpEarned * finalMultiplier); 
 
@@ -138,7 +157,7 @@ public class Career {
                 System.out.printf("BOOST TEMPORARIO ATIVO! Base XP: %d -> Final XP: %d%n", baseXpEarned, finalXpEarned);
                 developer.useBoost(); 
             } else {
-                 System.out.printf("Base XP: %d. XP Final (c/ Skill Boost %.1fx): %d%n", 
+                 System.out.printf("Base XP: %d. XP Final (c/ Skill Boost %.2fx): %d%n", 
                     baseXpEarned, 
                     developer.getPermanentXpBoost(), 
                     finalXpEarned);
@@ -169,18 +188,50 @@ public class Career {
     }
     
     private void studySkill() {
+        
+        // --- 1. Continua o estudo ativo ---
+        if (developer.getActiveSkillStudy() != null) {
+            
+            int progressIncrease = 25; 
+            int currentProgress = developer.getSkillProgress();
+            int newProgress = currentProgress + progressIncrease;
+            
+            developer.setSkillProgress(newProgress);
+            
+            System.out.println("\n📚 Continuou estudando: " + developer.getActiveSkillStudy() + "...");
+            
+            if (newProgress >= 100) {
+                String finishedSkill = developer.getActiveSkillStudy();
+                
+                developer.addSkill(finishedSkill);
+                developer.gainXp(50); 
+                
+                double boostPercentage = SkillCatalog.getBoostEffect(finishedSkill);
+                developer.addPermanentXpBoost(boostPercentage);
+                
+                developer.finishSkillStudy(); 
+                
+                System.out.println("🎉 SKILL CONCLUÍDA: " + finishedSkill + "!");
+                System.out.printf("Ganhou +50 XP e +%.1f%% XP permanente.%n", boostPercentage);
+                
+            } else {
+                System.out.println("📈 Progresso subiu para " + newProgress + "% (" + (100 - newProgress) + "% restante).");
+                developer.gainXp(10); 
+            }
+            return;
+        }
+
+        // --- 2. Inicia um novo estudo ---
+        
         List<String> allSkills = SkillCatalog.getAllSkills();
         List<String> availableToLearn = new ArrayList<>();
         
-        System.out.println("SKILLS DISPONIVEIS:");
+        System.out.println("SKILLS DISPONIVEIS PARA INICIAR ESTUDO:");
         int index = 1;
         for (String skill : allSkills) {
             if (!developer.getSkills().contains(skill)) {
-                
-                // Exibe o efeito de boost da skill
                 double boost = SkillCatalog.getBoostEffect(skill);
                 System.out.printf("%d. %s (+%.1f%% XP permanente)%n", index, skill, boost);
-                
                 availableToLearn.add(skill);
                 index++;
             }
@@ -192,7 +243,7 @@ public class Career {
             return;
         }
 
-        System.out.print("Escolha o numero: ");
+        System.out.print("Escolha o numero da skill para iniciar o estudo: ");
         try {
             int choiceIndex = scanner.nextInt();
             scanner.nextLine(); 
@@ -200,16 +251,9 @@ public class Career {
             if (choiceIndex > 0 && choiceIndex <= availableToLearn.size()) {
                 String chosenSkill = availableToLearn.get(choiceIndex - 1);
                 
-                if (developer.addSkill(chosenSkill)) {
-                    // 1. Ganha XP por estudar
-                    developer.gainXp(10); 
-                    
-                    // 2. Aplica o boost permanente
-                    double boostPercentage = SkillCatalog.getBoostEffect(chosenSkill);
-                    developer.addPermanentXpBoost(boostPercentage);
-                    
-                    System.out.println("Skill aprendida: " + chosenSkill + " (+10 XP).");
-                }
+                developer.setActiveSkillStudy(chosenSkill);
+                System.out.println("📝 Estudo de **" + chosenSkill + "** iniciado! Complete-o em proximos turnos.");
+                developer.gainXp(5); 
                 
             } else {
                 System.out.println("Opcao invalida.");
@@ -233,9 +277,14 @@ public class Career {
                 developer.getBoostRemainingProjects());
         }
         
-        // Exibe o boost permanente
         if (developer.getPermanentXpBoost() > 1.0) {
              System.out.printf(" | SKILL BOOST: x%.2f", developer.getPermanentXpBoost());
+        }
+        
+        if (developer.getActiveSkillStudy() != null) {
+            System.out.printf(" | ESTUDO ATIVO: %s (%d%%)", 
+                developer.getActiveSkillStudy(), 
+                developer.getSkillProgress());
         }
         
         System.out.println(); 

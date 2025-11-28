@@ -11,9 +11,11 @@ public class Developer {
     private Level currentPosition;
     private double xpMultiplier = 1.0;
     private int boostRemainingProjects = 0;
-    
-    // NOVO: Multiplicador Permanente de XP (acumulativo)
     private double permanentXpBoost = 1.0; 
+    
+    // Rastreamento da skill em estudo
+    private String activeSkillStudy = null;
+    private int skillProgress = 0; 
 
     public Developer(String name) {
         this.name = name;
@@ -29,6 +31,25 @@ public class Developer {
     public double getXpMultiplier() { return xpMultiplier; }
     public int getBoostRemainingProjects() { return boostRemainingProjects; }
     public double getPermanentXpBoost() { return permanentXpBoost; }
+    
+    // NOVOS Getters/Setters para Skill Study
+    public String getActiveSkillStudy() { return activeSkillStudy; }
+    public int getSkillProgress() { return skillProgress; }
+    
+    public void setActiveSkillStudy(String skill) {
+        this.activeSkillStudy = skill;
+        this.skillProgress = 0; 
+    }
+    
+    public void setSkillProgress(int progress) {
+        this.skillProgress = progress;
+    }
+    
+    public void finishSkillStudy() {
+        this.activeSkillStudy = null;
+        this.skillProgress = 0;
+    }
+    // FIM dos NOVOS Getters/Setters para Skill Study
 
     public void gainXp(double amount) {
         this.xp = Math.max(0, this.xp + amount); 
@@ -66,7 +87,6 @@ public class Developer {
         }
     }
     
-    // NOVO MÉTODO: Adiciona um aumento percentual ao boost permanente
     public void addPermanentXpBoost(double percentage) {
         this.permanentXpBoost += percentage / 100.0;
         System.out.printf("BOOST PERMANENTE: XP base aumentou %.1f%%%n", percentage);

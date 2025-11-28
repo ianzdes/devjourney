@@ -51,7 +51,7 @@ O trabalho em projetos é incremental:
 
 ### 3. Mecânica de Alto Risco e Recompensa
 
-O **`GirlfriendChallenge`** introduz uma mecânica de *boost* permanente:
+O **`GirlfriendChallenge`** introduz uma mecânica de *boost* temporário:
 
 | Escolha | Efeito Imediato | Recompensa de Longo Prazo |
 | :--- | :--- | :--- |
